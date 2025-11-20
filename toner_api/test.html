@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test Toner API</title>
+</head>
+<body>
+<h1>Test Toner API</h1>
+
+Barcode: <input id="barcode" value="1234567890123"><br>
+Location: <input id="location" value="R1P2C"><br>
+Model: <input id="model" value="HP-CE285A"><br>
+<button onclick="sendToner()">Wyślij toner</button>
+<button onclick="getToner()">Pobierz toner</button>
+<button onclick="listToners()">Lista tonerów</button>
+
+<pre id="output"></pre>
+
+<script>
+async function sendToner() {
+    const data = {
+        barcode: document.getElementById('barcode').value,
+        location: document.getElementById('location').value,
+        model: document.getElementById('model').value
+    };
+    const res = await fetch('add_or_update.php', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(data)
+    });
+    const json = await res.json();
+    document.getElementById('output').textContent = JSON.stringify(json, null, 2);
+}
+
+async function getToner() {
+    const barcode = document.getElementById('barcode').value;
+    const res = await fetch('get_toner.php?barcode=' + encodeURIComponent(barcode));
+    const json = await res.json();
+    document.getElementById('output').textContent = JSON.stringify(json, null, 2);
+}
+
+async function listToners() {
+    const res = await fetch('list.php');
+    const json = await res.json();
+    document.getElementById('output').textContent = JSON.stringify(json, null, 2);
+}
+</script>
+</body>
+</html>
